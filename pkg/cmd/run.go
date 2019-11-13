@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"path"
@@ -133,6 +134,9 @@ func (o *runCmdOptions) validateArgs(_ *cobra.Command, args []string) error {
 			}
 		} else {
 			// nolint: gosec
+			if _, err := url.ParseRequestURI(fileName); err != nil {
+				return errors.Wrap(err, "The URL provided is invalid")
+			}
 			resp, err := http.Get(fileName)
 			if resp != nil && resp.Body != nil {
 				resp.Body.Close()
